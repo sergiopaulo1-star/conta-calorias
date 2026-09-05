@@ -1,0 +1,8 @@
+# Material de referência de design, não faz parte do app
+/*.jpeg
+/*.jpg
+stitch_app_design_redesign.zip
+
+# Sistema
+.DS_Store
+Thumbs.db

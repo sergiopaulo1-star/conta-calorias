@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Conta Calorias</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b6e4f">
+
+<!-- Ícones e comportamento em tela cheia no iOS -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Conta Calorias">
+
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>🍽️ Conta Calorias</h1>
+  <p>Sua contagem diária de calorias, simples e direta</p>
+</header>
+
+<nav>
+  <button class="tab-btn ativo" data-aba="hoje">Hoje</button>
+  <button class="tab-btn" data-aba="progresso">Progresso</button>
+  <button class="tab-btn" data-aba="perfil">Meta / Perfil</button>
+</nav>
+
+<main>
+
+  <!-- ABA HOJE -->
+  <section id="aba-hoje" class="aba ativa">
+
+    <div class="data-nav">
+      <button id="dia-anterior">‹</button>
+      <span id="data-atual-label">Hoje</span>
+      <button id="dia-seguinte">›</button>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo-linha">
+        <h2>Resumo</h2>
+      </div>
+
+      <div class="resumo-hero">
+        <div class="resumo-lado">
+          <span class="valor" id="resumo-consumido">0</span>
+          <span class="rotulo">Consumidas</span>
+        </div>
+
+        <div class="anel-wrap">
+          <svg viewBox="0 0 132 132">
+            <circle class="anel-fundo" cx="66" cy="66" r="58"></circle>
+            <circle class="anel-progresso" id="anel-progresso" cx="66" cy="66" r="58"></circle>
+          </svg>
+          <div class="anel-centro">
+            <span class="valor" id="resumo-restante">0</span>
+            <span class="rotulo">Restantes</span>
+          </div>
+        </div>
+
+        <div class="resumo-lado">
+          <span class="valor" id="resumo-meta">0</span>
+          <span class="rotulo">Meta</span>
+        </div>
+      </div>
+
+      <div class="macros-grid">
+        <div>
+          <span class="macro-nome">Carboidratos</span>
+          <div class="macro-barra"><div class="fill carb" id="barra-carb" style="width:0%"></div></div>
+          <span class="macro-valor" id="macro-carboidrato">0 g</span>
+        </div>
+        <div>
+          <span class="macro-nome">Proteína</span>
+          <div class="macro-barra"><div class="fill prot" id="barra-prot" style="width:0%"></div></div>
+          <span class="macro-valor" id="macro-proteina">0 g</span>
+        </div>
+        <div>
+          <span class="macro-nome">Gordura</span>
+          <div class="macro-barra"><div class="fill gord" id="barra-gord" style="width:0%"></div></div>
+          <span class="macro-valor" id="macro-gordura">0 g</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-titulo-linha" style="padding: 0 4px;">
+      <h2 style="font-size:1.1rem;">Alimentação</h2>
+    </div>
+
+    <div class="lista-refeicoes" id="lista-refeicoes">
+      <!-- gerado via JS -->
+    </div>
+
+    <div class="card-titulo-linha" style="padding: 0 4px;">
+      <h2 style="font-size:1.1rem;">Monitor de água</h2>
+    </div>
+
+    <div class="card" id="card-agua">
+      <div style="text-align:center;">
+        <span class="rotulo" id="agua-meta-label">Objetivo: 2,00 litros</span>
+        <div class="agua-total" id="agua-total">0,00 L</div>
+      </div>
+      <div class="agua-copos" id="agua-copos">
+        <!-- gerado via JS -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MODAL: adicionar alimento em uma refeição -->
+  <div class="modal-fundo" id="modal-adicionar">
+    <div class="modal-conteudo">
+      <div class="modal-topo">
+        <h3 id="modal-titulo-refeicao">Café da manhã</h3>
+        <button class="btn-fechar-modal" id="btn-fechar-modal">✕</button>
+      </div>
+
+      <label for="busca-alimento">Buscar alimento</label>
+      <input type="text" id="busca-alimento" placeholder="Ex: arroz, frango, banana..." autocomplete="off">
+      <div class="sugestoes" id="lista-sugestoes" style="display:none;"></div>
+
+      <div id="alimento-selecionado" style="display:none;">
+        <div class="linha">
+          <div>
+            <label for="quantidade-g">Quantidade (g/ml)</label>
+            <input type="number" id="quantidade-g" value="100" min="1">
+          </div>
+          <div>
+            <label>Calorias estimadas</label>
+            <input type="text" id="kcal-preview" disabled>
+          </div>
+        </div>
+        <button class="acao" id="btn-adicionar">Adicionar</button>
+      </div>
+
+      <h3 style="margin-top:20px;">Itens adicionados</h3>
+      <ul class="lista-refeicao" id="lista-itens">
+        <li class="vazio">Nenhum item ainda</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ABA PROGRESSO -->
+  <section id="aba-progresso" class="aba">
+    <div class="card">
+      <h3>Últimos 7 dias</h3>
+      <canvas id="grafico-semana" height="220"></canvas>
+    </div>
+    <div class="card">
+      <h3>Histórico</h3>
+      <ul class="lista-refeicao" id="lista-historico">
+        <li class="vazio">Sem histórico ainda</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ABA PERFIL / META -->
+  <section id="aba-perfil" class="aba">
+    <div class="card">
+      <h3>Seus dados</h3>
+      <div class="linha">
+        <div>
+          <label for="perfil-peso">Peso (kg)</label>
+          <input type="number" id="perfil-peso" placeholder="70">
+        </div>
+        <div>
+          <label for="perfil-altura">Altura (cm)</label>
+          <input type="number" id="perfil-altura" placeholder="170">
+        </div>
+      </div>
+      <div class="linha">
+        <div>
+          <label for="perfil-idade">Idade</label>
+          <input type="number" id="perfil-idade" placeholder="30">
+        </div>
+        <div>
+          <label for="perfil-sexo">Sexo</label>
+          <select id="perfil-sexo">
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+          </select>
+        </div>
+      </div>
+      <label for="perfil-atividade">Nível de atividade</label>
+      <select id="perfil-atividade">
+        <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+        <option value="1.375">Leve (exercício leve 1-3x/semana)</option>
+        <option value="1.55">Moderado (exercício moderado 3-5x/semana)</option>
+        <option value="1.725">Alto (exercício intenso 6-7x/semana)</option>
+        <option value="1.9">Muito alto (exercício muito intenso, trabalho físico)</option>
+      </select>
+
+      <label for="perfil-objetivo">Objetivo</label>
+      <select id="perfil-objetivo">
+        <option value="perder">Perder peso</option>
+        <option value="manter">Manter peso</option>
+        <option value="ganhar">Ganhar peso</option>
+      </select>
+
+      <button class="acao" id="btn-calcular-meta">Calcular minha meta</button>
+    </div>
+
+    <div class="card">
+      <h3>Meta diária de calorias</h3>
+      <label for="meta-manual">Meta (kcal) — pode ajustar manualmente</label>
+      <input type="number" id="meta-manual" placeholder="2000">
+      <button class="acao" id="btn-salvar-meta">Salvar meta</button>
+      <p style="font-size:0.8rem; color:var(--texto-suave)" id="explicacao-tmb"></p>
+    </div>
+
+    <div class="card">
+      <h3>Distribuição de macronutrientes</h3>
+      <div class="chips-macro-grid">
+        <div class="chip-macro chip-carb">
+          <span class="chip-macro-valor" id="perfil-macro-carb">0 g</span>
+          <span class="chip-macro-nome">Carboidratos</span>
+        </div>
+        <div class="chip-macro chip-prot">
+          <span class="chip-macro-valor" id="perfil-macro-prot">0 g</span>
+          <span class="chip-macro-nome">Proteína</span>
+        </div>
+        <div class="chip-macro chip-gord">
+          <span class="chip-macro-valor" id="perfil-macro-gord">0 g</span>
+          <span class="chip-macro-nome">Gordura</span>
+        </div>
+      </div>
+      <p style="font-size:0.8rem; color:var(--texto-suave); margin-top:12px;" id="explicacao-macros"></p>
+    </div>
+  </section>
+
+</main>
+
+<script src="alimentos.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

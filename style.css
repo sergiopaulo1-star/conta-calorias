@@ -1,0 +1,613 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --verde-escuro: #0b6e4f;
+  --verde: #0fa968;
+  --verde-suave: #e8f7f0;
+  --ambar: #f59e0b;
+  --ambar-suave: #fff4e0;
+  --coral: #ef4444;
+  --coral-suave: #feecec;
+  --azul: #3b82f6;
+  --azul-suave: #eaf2fe;
+  --agua: #2d81e0;
+  --agua-suave: #d8ecfd;
+  --agua-vazio: #f0f7ff;
+  --texto: #181a1f;
+  --texto-suave: #6b7280;
+  --fundo: #f7f8fa;
+  --card: #ffffff;
+  --borda: #f1f2f4;
+  --radius-card: 24px;
+  --radius-pill: 9999px;
+  --sombra-card: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+  color: white;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+header p {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+nav {
+  display: flex;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--borda);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+nav button {
+  flex: 1;
+  padding: 14px 4px;
+  border: none;
+  background: none;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #9aa1ab;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s ease;
+}
+
+nav button.ativo {
+  color: var(--verde);
+  border-bottom-color: var(--verde);
+}
+
+main {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: 60px;
+}
+
+.aba { display: none; }
+.aba.ativa { display: block; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--sombra-card);
+}
+
+.card h2, .card h3 {
+  margin-top: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.card-titulo-linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.card-titulo-linha h2, .card-titulo-linha h3 {
+  margin: 0;
+}
+
+.link-acao {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--verde);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ---------- Anel de progresso circular ---------- */
+.resumo-hero {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 8px 0 16px;
+}
+
+.resumo-lado {
+  text-align: center;
+}
+
+.resumo-lado .valor {
+  display: block;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.resumo-lado .rotulo {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.anel-wrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anel-wrap svg {
+  width: 132px;
+  height: 132px;
+}
+
+.anel-fundo {
+  fill: none;
+  stroke: var(--borda);
+  stroke-width: 10;
+}
+
+.anel-progresso {
+  fill: none;
+  stroke: var(--verde);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.4s ease, stroke 0.3s ease;
+}
+
+.anel-progresso.excedido { stroke: var(--coral); }
+
+.anel-centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.anel-centro .valor {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.anel-centro .rotulo {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+
+/* ---------- Chips de macro (aba Perfil) ---------- */
+.chips-macro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.chip-macro {
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.chip-macro-valor {
+  display: block;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip-macro-nome {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+.chip-carb { background: var(--azul-suave); }
+.chip-carb .chip-macro-valor { color: var(--azul); }
+
+.chip-prot { background: var(--coral-suave); }
+.chip-prot .chip-macro-valor { color: var(--coral); }
+
+.chip-gord { background: var(--ambar-suave); }
+.chip-gord .chip-macro-valor { color: var(--ambar); }
+
+/* ---------- Macros ---------- */
+.macros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borda);
+  text-align: center;
+}
+
+.macro-nome {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  display: block;
+}
+
+.macro-barra {
+  width: 100%;
+  background: var(--borda);
+  height: 6px;
+  border-radius: var(--radius-pill);
+  margin: 6px 0;
+  overflow: hidden;
+}
+
+.macro-barra .fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+}
+
+.macro-barra .fill.carb { background: var(--azul); }
+.macro-barra .fill.prot { background: var(--coral); }
+.macro-barra .fill.gord { background: var(--ambar); }
+
+.macro-valor {
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Formulários ---------- */
+label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--texto-suave);
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--borda);
+  background: var(--fundo);
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 12px;
+  color: var(--texto);
+}
+
+input:focus, select:focus {
+  outline: none;
+  background: white;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 2px rgba(15, 169, 104, 0.15);
+}
+
+button.acao {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+  color: white;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -6px rgba(15, 169, 104, 0.4);
+  margin-bottom: 12px;
+}
+
+button.acao:hover { filter: brightness(1.05); }
+button.acao:active { transform: scale(0.98); }
+
+.linha {
+  display: flex;
+  gap: 10px;
+}
+
+.linha > * { flex: 1; }
+
+/* ---------- Cards de refeição ---------- */
+.lista-refeicoes {
+  background: var(--card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--borda);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.refeicao-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--borda);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.refeicao-item:last-child { border-bottom: none; }
+.refeicao-item:hover { background: #fafbfc; }
+.refeicao-item.selecionada { background: var(--verde-suave); }
+
+.refeicao-icone {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-right: 14px;
+}
+
+.refeicao-info { flex: 1; min-width: 0; }
+
+.refeicao-nome {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.refeicao-kcal {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+.refeicao-preview {
+  font-size: 0.75rem;
+  color: #9aa1ab;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.btn-add-refeicao {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--texto);
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.btn-add-refeicao:active { transform: scale(0.92); }
+
+/* ---------- Busca de alimentos ---------- */
+.sugestoes {
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-top: -6px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.sugestao-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--borda);
+}
+
+.sugestao-item:last-child { border-bottom: none; }
+.sugestao-item:hover { background: var(--verde-suave); }
+.sugestao-item .cat { color: var(--texto-suave); font-size: 0.75rem; }
+
+.vazio {
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+  padding: 24px 0;
+}
+
+canvas { max-width: 100%; }
+
+/* ---------- Lista de itens dentro de uma refeição ---------- */
+.lista-refeicao {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-refeicao li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.lista-refeicao li:last-child { border-bottom: none; }
+
+.item-nome { font-weight: 700; font-size: 0.9rem; font-family: "Plus Jakarta Sans", sans-serif; }
+.item-detalhe { font-size: 0.76rem; color: var(--texto-suave); }
+.item-kcal { font-weight: 800; color: var(--verde-escuro); white-space: nowrap; margin-left: 8px; font-variant-numeric: tabular-nums; }
+
+.btn-remover {
+  background: none;
+  border: none;
+  color: var(--coral);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0 6px;
+}
+
+/* ---------- Navegação de data ---------- */
+.data-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.data-nav button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--borda);
+  background: white;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--texto);
+}
+
+.data-nav span {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 700;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* ---------- Modal simples de adicionar alimento ---------- */
+.modal-fundo {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 26, 31, 0.5);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-fundo.aberto { display: flex; }
+
+.modal-conteudo {
+  background: white;
+  border-radius: 28px 28px 0 0;
+  padding: 20px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.modal-topo h3 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.btn-fechar-modal {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--borda);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* ---------- Monitor de água ---------- */
+#card-agua .rotulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+.agua-total {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--agua);
+  margin: 6px 0 14px;
+}
+
+.agua-copos {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.copo-agua {
+  width: 32px;
+  height: 40px;
+  clip-path: polygon(10% 0, 90% 0, 78% 100%, 22% 100%);
+  background: var(--agua-vazio);
+  border: 1px solid var(--agua-suave);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  padding: 0;
+}
+
+.copo-agua:active { transform: scale(0.9); }
+
+.copo-agua.cheio {
+  background: var(--agua-suave);
+  border-color: var(--agua);
+}
+
+.copo-agua.copo-add {
+  background: var(--agua-suave);
+  border: 1px solid var(--agua);
+  color: var(--agua);
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
