@@ -135,6 +135,34 @@ header {
   margin: 8px 0 0;
 }
 
+.login-sucesso {
+  background: var(--verde-suave);
+  color: var(--verde-escuro);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.link-esqueci-senha {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--verde-escuro);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.link-esqueci-senha:hover {
+  text-decoration: underline;
+}
+
 nav {
   display: flex;
   background: rgba(255,255,255,0.95);

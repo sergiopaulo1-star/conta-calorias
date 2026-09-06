@@ -38,7 +38,7 @@ function aguardarFirebasePronto() {
 }
 
 function mostrarTela(idTela) {
-  const telas = ["tela-login", "tela-verificar-email", "app-principal"];
+  const telas = ["tela-login", "tela-esqueci-senha", "tela-verificar-email", "app-principal"];
   telas.forEach((id) => {
     const el = document.getElementById(id);
     el.style.display = id === idTela ? (id === "app-principal" ? "block" : "flex") : "none";
@@ -48,14 +48,20 @@ function mostrarTela(idTela) {
 async function iniciarAutenticacao() {
   await aguardarFirebasePronto();
 
-  const { auth, onAuthStateChanged, signOut, sendEmailVerification, reload } = window.firebaseAuth;
+  const { auth, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload } = window.firebaseAuth;
 
   const inputEmail = document.getElementById("login-email");
   const inputSenha = document.getElementById("login-senha");
   const btnLogin = document.getElementById("btn-login");
   const btnCadastrar = document.getElementById("btn-cadastrar");
   const btnSair = document.getElementById("btn-sair");
+  const btnEsqueciSenha = document.getElementById("btn-esqueci-senha");
   const carregando = document.getElementById("login-carregando");
+
+  const inputEsqueciEmail = document.getElementById("esqueci-email");
+  const btnEnviarRecuperacao = document.getElementById("btn-enviar-recuperacao");
+  const btnVoltarLogin = document.getElementById("btn-voltar-login");
+  const carregandoEsqueci = document.getElementById("esqueci-carregando");
 
   const btnJaConfirmei = document.getElementById("btn-ja-confirmei");
   const btnReenviarEmail = document.getElementById("btn-reenviar-email");
@@ -66,6 +72,11 @@ async function iniciarAutenticacao() {
     carregando.style.display = ativo ? "block" : "none";
     btnLogin.disabled = ativo;
     btnCadastrar.disabled = ativo;
+  }
+
+  function definirCarregandoEsqueci(ativo) {
+    carregandoEsqueci.style.display = ativo ? "block" : "none";
+    btnEnviarRecuperacao.disabled = ativo;
   }
 
   function definirCarregandoVerificacao(ativo) {
@@ -122,6 +133,50 @@ async function iniciarAutenticacao() {
   btnSair.addEventListener("click", async () => {
     await signOut(auth);
   });
+
+  btnEsqueciSenha.addEventListener("click", () => {
+    limparErro("login-erro");
+    limparErro("esqueci-erro");
+    document.getElementById("esqueci-sucesso").style.display = "none";
+    inputEsqueciEmail.value = inputEmail.value.trim();
+    mostrarTela("tela-esqueci-senha");
+  });
+
+  btnVoltarLogin.addEventListener("click", () => {
+    mostrarTela("tela-login");
+  });
+
+  btnEnviarRecuperacao.addEventListener("click", async () => {
+    limparErro("esqueci-erro");
+    document.getElementById("esqueci-sucesso").style.display = "none";
+
+    const email = inputEsqueciEmail.value.trim();
+    if (!email) {
+      mostrarErro("esqueci-erro", "Digite seu e-mail.");
+      return;
+    }
+
+    definirCarregandoEsqueci(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      mostrarSucessoRecuperacao();
+    } catch (erro) {
+      // Não revela se o e-mail existe ou não na base (evita enumeração de contas).
+      if (erro.code === "auth/user-not-found") {
+        mostrarSucessoRecuperacao();
+      } else {
+        mostrarErro("esqueci-erro", traduzirErroFirebase(erro.code));
+      }
+    } finally {
+      definirCarregandoEsqueci(false);
+    }
+  });
+
+  function mostrarSucessoRecuperacao() {
+    const sucesso = document.getElementById("esqueci-sucesso");
+    sucesso.textContent = "Se esse e-mail estiver cadastrado, você vai receber um link para redefinir a senha. Confira também o spam.";
+    sucesso.style.display = "block";
+  }
 
   btnSairVerificacao.addEventListener("click", async () => {
     await signOut(auth);

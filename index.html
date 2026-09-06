@@ -36,8 +36,29 @@
 
     <button class="acao" id="btn-login">Entrar</button>
     <button class="acao" id="btn-cadastrar" style="background:white; color:var(--verde-escuro); border:1px solid var(--verde); box-shadow:none;">Criar conta</button>
+    <button type="button" id="btn-esqueci-senha" class="link-esqueci-senha">Esqueci minha senha</button>
 
     <p class="login-rodape" id="login-carregando" style="display:none;">Carregando...</p>
+  </div>
+</div>
+
+<!-- TELA: recuperação de senha -->
+<div id="tela-esqueci-senha" style="display:none;">
+  <div class="login-card">
+    <div class="login-logo">🔑</div>
+    <h1 class="login-titulo">Recuperar senha</h1>
+    <p class="login-subtitulo">Digite seu e-mail e enviaremos um link para redefinir sua senha.</p>
+
+    <div id="esqueci-erro" class="login-erro" style="display:none;"></div>
+    <div id="esqueci-sucesso" class="login-sucesso" style="display:none;"></div>
+
+    <label for="esqueci-email">E-mail</label>
+    <input type="email" id="esqueci-email" placeholder="seu@email.com" autocomplete="email">
+
+    <button class="acao" id="btn-enviar-recuperacao">Enviar link de recuperação</button>
+    <button type="button" id="btn-voltar-login" class="link-esqueci-senha">Voltar para o login</button>
+
+    <p class="login-rodape" id="esqueci-carregando" style="display:none;">Enviando...</p>
   </div>
 </div>
 

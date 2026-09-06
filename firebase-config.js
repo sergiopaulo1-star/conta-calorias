@@ -6,6 +6,7 @@ import {
   signOut,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
   reload,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {
@@ -35,6 +36,7 @@ window.firebaseAuth = {
   signOut,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
   reload,
 };
 
