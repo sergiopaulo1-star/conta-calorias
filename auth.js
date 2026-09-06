@@ -48,10 +48,11 @@ function mostrarTela(idTela) {
 async function iniciarAutenticacao() {
   await aguardarFirebasePronto();
 
-  const { auth, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload } = window.firebaseAuth;
+  const { auth, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload, deleteUser } = window.firebaseAuth;
 
   const inputEmail = document.getElementById("login-email");
   const inputSenha = document.getElementById("login-senha");
+  const inputCodigoConvite = document.getElementById("login-codigo-convite");
   const btnLogin = document.getElementById("btn-login");
   const btnCadastrar = document.getElementById("btn-cadastrar");
   const btnSair = document.getElementById("btn-sair");
@@ -109,6 +110,7 @@ async function iniciarAutenticacao() {
     limparErro("login-erro");
     const email = inputEmail.value.trim();
     const senha = inputSenha.value;
+    const codigoConvite = inputCodigoConvite.value.trim();
 
     if (!email || !senha) {
       mostrarErro("login-erro", "Preencha e-mail e senha.");
@@ -118,13 +120,39 @@ async function iniciarAutenticacao() {
       mostrarErro("login-erro", "A senha precisa ter pelo menos 6 caracteres.");
       return;
     }
+    if (!codigoConvite) {
+      mostrarErro("login-erro", "Digite o código de convite para criar uma conta.");
+      return;
+    }
 
     definirCarregandoLogin(true);
+    let credencial = null;
     try {
-      const credencial = await window.firebaseAuth.createUserWithEmailAndPassword(auth, email, senha);
+      credencial = await window.firebaseAuth.createUserWithEmailAndPassword(auth, email, senha);
+
+      // A gravação abaixo só é aceita pelo Firestore se o código de convite
+      // for válido (checagem real acontece nas regras de segurança do banco).
+      const { db, doc, setDoc } = window.firebaseDb;
+      await setDoc(doc(db, "usuarios", credencial.user.uid), {
+        registros: {},
+        perfil: null,
+        meta: 2000,
+        agua: {},
+        codigoConviteUsado: codigoConvite,
+      });
+
       await sendEmailVerification(credencial.user);
     } catch (erro) {
-      mostrarErro("login-erro", traduzirErroFirebase(erro.code));
+      if (erro.code === "permission-denied") {
+        mostrarErro("login-erro", "Código de convite inválido.");
+      } else {
+        mostrarErro("login-erro", traduzirErroFirebase(erro.code));
+      }
+      // Se o código estiver errado, desfaz a conta criada para não deixar lixo
+      // no Authentication sem acesso nenhum ao app.
+      if (credencial && credencial.user) {
+        await deleteUser(credencial.user).catch(() => {});
+      }
     } finally {
       definirCarregandoLogin(false);
     }

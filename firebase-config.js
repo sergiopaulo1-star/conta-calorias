@@ -8,6 +8,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   reload,
+  deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {
   getFirestore,
@@ -38,6 +39,7 @@ window.firebaseAuth = {
   sendEmailVerification,
   sendPasswordResetEmail,
   reload,
+  deleteUser,
 };
 
 window.firebaseDb = { db, doc, getDoc, setDoc };

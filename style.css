@@ -119,6 +119,12 @@ header {
   text-align: left;
 }
 
+.rotulo-opcional {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #9aa1ab;
+}
+
 .login-erro {
   background: var(--coral-suave);
   color: var(--coral);
