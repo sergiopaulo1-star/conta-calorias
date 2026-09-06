@@ -1,4 +1,4 @@
-const CACHE_NOME = "conta-calorias-v1";
+const CACHE_NOME = "conta-calorias-v2";
 
 const ARQUIVOS_PARA_CACHE = [
   "./",
@@ -6,6 +6,8 @@ const ARQUIVOS_PARA_CACHE = [
   "./style.css",
   "./app.js",
   "./alimentos.js",
+  "./auth.js",
+  "./firebase-config.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -31,22 +33,18 @@ self.addEventListener("activate", (evento) => {
   self.clients.claim();
 });
 
-// Estratégia: cache primeiro, com atualização em segundo plano (stale-while-revalidate)
+// Estratégia: rede primeiro (garante versão mais nova quando online),
+// com fallback para o cache quando não há internet.
 self.addEventListener("fetch", (evento) => {
   if (evento.request.method !== "GET") return;
 
   evento.respondWith(
-    caches.open(CACHE_NOME).then((cache) =>
-      cache.match(evento.request).then((respostaCache) => {
-        const buscaRede = fetch(evento.request)
-          .then((respostaRede) => {
-            cache.put(evento.request, respostaRede.clone());
-            return respostaRede;
-          })
-          .catch(() => respostaCache);
-
-        return respostaCache || buscaRede;
+    fetch(evento.request)
+      .then((respostaRede) => {
+        const copia = respostaRede.clone();
+        caches.open(CACHE_NOME).then((cache) => cache.put(evento.request, copia));
+        return respostaRede;
       })
-    )
+      .catch(() => caches.match(evento.request))
   );
 });
