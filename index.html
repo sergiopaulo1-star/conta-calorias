@@ -19,9 +19,35 @@
 </head>
 <body>
 
+<!-- TELA DE LOGIN / CADASTRO -->
+<div id="tela-login">
+  <div class="login-card">
+    <div class="login-logo">🍽️</div>
+    <h1 class="login-titulo">Conta Calorias</h1>
+    <p class="login-subtitulo">Entre para acessar seus dados</p>
+
+    <div id="login-erro" class="login-erro" style="display:none;"></div>
+
+    <label for="login-email">E-mail</label>
+    <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+
+    <label for="login-senha">Senha</label>
+    <input type="password" id="login-senha" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+
+    <button class="acao" id="btn-login">Entrar</button>
+    <button class="acao" id="btn-cadastrar" style="background:white; color:var(--verde-escuro); border:1px solid var(--verde); box-shadow:none;">Criar conta</button>
+
+    <p class="login-rodape" id="login-carregando" style="display:none;">Carregando...</p>
+  </div>
+</div>
+
+<!-- APP (só aparece depois do login) -->
+<div id="app-principal" style="display:none;">
+
 <header>
   <h1>🍽️ Conta Calorias</h1>
   <p>Sua contagem diária de calorias, simples e direta</p>
+  <button id="btn-sair" class="btn-sair">Sair</button>
 </header>
 
 <nav>
@@ -235,7 +261,12 @@
 
 </main>
 
+</div>
+<!-- fim do app-principal -->
+
 <script src="alimentos.js"></script>
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="auth.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

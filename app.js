@@ -24,56 +24,79 @@ const REFEICOES = [
   { nome: "Lanche", icone: "🍎", cor: "#fdeef2", fracaoMeta: 0.15 },
 ];
 
-const CHAVE_REGISTROS = "calorias_registros";
-const CHAVE_PERFIL = "calorias_perfil";
-const CHAVE_META = "calorias_meta";
-const CHAVE_AGUA = "calorias_agua";
 const ML_POR_COPO = 250;
 const COPOS_EXIBIDOS = 8; // copos vazios mostrados além dos já preenchidos
 
-function carregarRegistros() {
+// ---------- Dados do usuário (sincronizados com o Firestore) ----------
+// Enquanto o app estiver rodando, os dados ficam em memória aqui e são
+// persistidos no documento "usuarios/{uid}" do Firestore a cada alteração.
+let estadoUsuario = { registros: {}, perfil: null, meta: 2000, agua: {} };
+let uidAtual = null;
+let dadosCarregados = false;
+
+async function salvarEstadoNoFirestore() {
+  if (!uidAtual) return;
+  const { db, doc, setDoc } = window.firebaseDb;
   try {
-    return JSON.parse(localStorage.getItem(CHAVE_REGISTROS)) || {};
-  } catch {
-    return {};
+    await setDoc(doc(db, "usuarios", uidAtual), estadoUsuario);
+  } catch (erro) {
+    console.warn("Falha ao salvar dados na nuvem:", erro);
   }
+}
+
+async function carregarEstadoDoFirestore(uid) {
+  const { db, doc, getDoc } = window.firebaseDb;
+  const referencia = doc(db, "usuarios", uid);
+  const snapshot = await getDoc(referencia);
+
+  if (snapshot.exists()) {
+    const dados = snapshot.data();
+    estadoUsuario = {
+      registros: dados.registros || {},
+      perfil: dados.perfil || null,
+      meta: dados.meta || 2000,
+      agua: dados.agua || {},
+    };
+  } else {
+    estadoUsuario = { registros: {}, perfil: null, meta: 2000, agua: {} };
+  }
+  dadosCarregados = true;
+}
+
+function carregarRegistros() {
+  return estadoUsuario.registros;
 }
 
 function salvarRegistros(registros) {
-  localStorage.setItem(CHAVE_REGISTROS, JSON.stringify(registros));
+  estadoUsuario.registros = registros;
+  salvarEstadoNoFirestore();
 }
 
 function carregarPerfil() {
-  try {
-    return JSON.parse(localStorage.getItem(CHAVE_PERFIL)) || null;
-  } catch {
-    return null;
-  }
+  return estadoUsuario.perfil;
 }
 
 function salvarPerfil(perfil) {
-  localStorage.setItem(CHAVE_PERFIL, JSON.stringify(perfil));
+  estadoUsuario.perfil = perfil;
+  salvarEstadoNoFirestore();
 }
 
 function carregarMeta() {
-  const meta = localStorage.getItem(CHAVE_META);
-  return meta ? Number(meta) : 2000;
+  return estadoUsuario.meta || 2000;
 }
 
 function salvarMeta(valor) {
-  localStorage.setItem(CHAVE_META, String(valor));
+  estadoUsuario.meta = valor;
+  salvarEstadoNoFirestore();
 }
 
 function carregarAgua() {
-  try {
-    return JSON.parse(localStorage.getItem(CHAVE_AGUA)) || {};
-  } catch {
-    return {};
-  }
+  return estadoUsuario.agua;
 }
 
 function salvarAgua(registroAgua) {
-  localStorage.setItem(CHAVE_AGUA, JSON.stringify(registroAgua));
+  estadoUsuario.agua = registroAgua;
+  salvarEstadoNoFirestore();
 }
 
 // Meta de água: 35ml por kg de peso corporal, ou 2 litros se não houver peso cadastrado.
@@ -574,11 +597,20 @@ function desenharGrafico(dias, meta) {
   });
 }
 
-// ---------- Inicialização ----------
-document.getElementById("meta-manual").value = carregarMeta();
-carregarFormularioPerfil();
-atualizarTudoAbaHoje();
-atualizarMacrosPerfil(carregarMeta());
+// ---------- Inicialização (só depois do login) ----------
+async function inicializarApp() {
+  document.getElementById("meta-manual").value = carregarMeta();
+  carregarFormularioPerfil();
+  atualizarTudoAbaHoje();
+  atualizarMacrosPerfil(carregarMeta());
+}
+
+document.addEventListener("usuario-logado", async (evento) => {
+  uidAtual = evento.detail.uid;
+  dataSelecionada = new Date();
+  await carregarEstadoDoFirestore(uidAtual);
+  inicializarApp();
+});
 
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#busca-alimento") && !e.target.closest("#lista-sugestoes")) {

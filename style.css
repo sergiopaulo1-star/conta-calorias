@@ -54,6 +54,87 @@ header p {
   opacity: 0.9;
 }
 
+header {
+  position: relative;
+}
+
+.btn-sair {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  width: auto;
+  margin: 0;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-sair:hover { background: rgba(255,255,255,0.25); }
+
+/* ---------- Tela de login ---------- */
+#tela-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: var(--radius-card);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 50px -12px rgba(0,0,0,0.3);
+}
+
+.login-logo {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.login-titulo {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  margin: 0 0 4px;
+  color: var(--texto);
+}
+
+.login-subtitulo {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0 0 24px;
+}
+
+.login-card label {
+  text-align: left;
+}
+
+.login-erro {
+  background: var(--coral-suave);
+  color: var(--coral);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.login-rodape {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  margin: 8px 0 0;
+}
+
 nav {
   display: flex;
   background: rgba(255,255,255,0.95);
